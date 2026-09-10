@@ -1,23 +1,54 @@
-# Tetris en Python
-Proyecto personal de Randy A. Medina.
+# Tetris: matrices, colisiones y gestión de estados
 
-El motor de reglas está escrito en Python puro, separado de la interfaz HTML/CSS/JavaScript. Pyodide ejecuta Python en un Web Worker del navegador. No requiere backend, cuentas ni servicios de pago.
+Proyecto de lógica desarrollado originalmente en Python y adaptado a JavaScript para ejecutarse directamente en el navegador. El motor modela un tablero de 20 × 10, siete tipos de piezas y una partida que aumenta de nivel con las líneas eliminadas.
 
-## Jugar localmente
+## Evidencia técnica
+
+- **Matrices:** tablero, piezas y rotaciones se representan como matrices bidimensionales.
+- **Detección de colisiones:** verifica límites, bloques ocupados y posición antes de cada movimiento.
+- **Gestión de estados:** pieza actual, siguiente pieza, puntuación, líneas, nivel, pausa y fin de partida.
+- **Dificultad progresiva:** el nivel aumenta cada diez líneas.
+- **Bolsa de siete piezas:** cada ciclo entrega una vez cada tetrominó antes de volver a mezclar.
+
+## Reglas implementadas
+
+- Movimiento horizontal, descenso, caída rápida y rotación.
+- Ajustes laterales sencillos al rotar cerca de una pared.
+- Bloqueo de pieza y eliminación simultánea de hasta cuatro líneas.
+- Puntuación por descenso y por líneas según el nivel.
+- Pausa, reinicio, vista de siguiente pieza y controles táctiles.
+
+No incluye `hold`, pieza fantasma ni todas las reglas de un Tetris competitivo oficial.
+
+## Arquitectura
+
+```text
+index.html + style.css     interfaz, panel y controles
+          ↓
+app.js                    bucle de juego y renderizado
+          ↓
+worker.js                 motor aislado de la interfaz
+          ↓
+tetris.py                 implementación original y reproducible
+```
+
+## Ejecutar en el navegador
+
 ```sh
 python -m http.server 8000
 ```
-Abrir http://localhost:8000. Se necesita conexión en la primera carga para descargar Pyodide desde jsDelivr. El botón Reintentar permite recuperarse de un error de red. No abrir el HTML mediante file://.
 
-Siete piezas, bolsa aleatoria, rotación con ajuste en paredes, eliminación de líneas, puntuación, siguiente pieza, niveles, pausa y reinicio. Flechas para mover/girar, espacio para caída rápida y P para pausa. Controles táctiles incluidos. Versión sencilla: sin hold, ghost ni reglas oficiales de competición.
+Abrir `http://localhost:8000`. No abrir el HTML mediante `file://`, porque el navegador restringe la carga del Worker.
 
-## Probar el motor
+## Pruebas
+
 ```sh
 python -m unittest discover -s tests -v
 ```
 
-Python no accede a ningún dato personal; la partida vive en memoria y se pierde al cerrar la página. El CDN recibe las solicitudes normales de descarga de recursos.
+Las pruebas cubren eliminación de cuatro líneas, puntuación, límites, rotación, pausa, caída rápida, fin de partida, bolsa de siete piezas y acciones inválidas.
 
-## Tecnología
-[Pyodide](https://pyodide.org/en/stable/usage/quickstart.html), fijado a v314.0.6. Python estándar, sin paquetes adicionales.
+## Privacidad y alcance
+
+La partida se ejecuta en memoria dentro del navegador. No existe backend, cuenta de usuario, telemetría ni almacenamiento de datos personales. El repositorio demuestra lógica, modelado de estados y pruebas, no una implementación oficial de Tetris.
 
